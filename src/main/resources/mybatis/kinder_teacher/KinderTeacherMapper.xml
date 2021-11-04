@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.kinder_teacher.mapper.KinderTeacherMapper">
+    
+    <resultMap type="KinderTeacher" id="KinderTeacherResult">
+        <result property="teacherId"    column="teacher_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="teacherNumber"    column="teacher_number"    />
+        <result property="phonenumber"    column="phonenumber"    />
+        <result property="duties"    column="duties"    />
+        <result property="email"    column="email"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="sex"    column="sex"    />
+        <result property="password"    column="password"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <association property="dept"    column="dept_id" javaType="SysDept" resultMap="deptResult" />
+        <collection  property="roles"   javaType="java.util.List"        resultMap="RoleResult" />
+    </resultMap>
+
+    <resultMap id="deptResult" type="SysDept">
+        <id     property="deptId"   column="dept_id"     />
+        <result property="parentId" column="parent_id"   />
+        <result property="deptName" column="dept_name"   />
+        <result property="orderNum" column="order_num"   />
+        <result property="leader"   column="leader"      />
+        <result property="status"   column="dept_status" />
+    </resultMap>
+
+    <resultMap id="RoleResult" type="SysRole">
+        <id     property="roleId"       column="role_id"        />
+        <result property="roleName"     column="role_name"      />
+        <result property="roleKey"      column="role_key"       />
+        <result property="roleSort"     column="role_sort"      />
+        <result property="dataScope"     column="data_scope"    />
+        <result property="status"       column="role_status"    />
+    </resultMap>
+
+    <sql id="selectKinderTeacherVo">
+        select teacher_id, dept_id, user_name, teacher_number, phonenumber, duties, email, birthday, sex, password, status, create_by, create_time, update_by, update_time, remark from kinder_teacher
+    </sql>
+
+
+    <select id="selectKinderTeacherList" parameterType="KinderTeacher" resultMap="KinderTeacherResult">
+        select t.teacher_id, t.dept_id, t.user_name,t.teacher_number,t.phonenumber,t.duties, t.email, t.password,t.birthday, t.sex, t.status, t.del_flag,t.create_by, t.create_time, t.remark, d.dept_name, d.leader from kinder_teacher t
+        left join sys_dept d on t.dept_id = d.dept_id
+        where t.del_flag = '0'
+        <if test="teacherId != null and teacherId != 0">
+            AND t.teacher_id = #{teacherId}
+        </if>
+        <if test="userName != null and userName != ''">
+            AND t.user_name like concat('%', #{userName}, '%')
+        </if>
+        <if test="status != null and status != ''">
+            AND t.status = #{status}
+        </if>
+        <if test="phonenumber != null and phonenumber != ''">
+            AND t.phonenumber like concat('%', #{phonenumber}, '%')
+        </if>
+        <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+            AND date_format(t.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+        </if>
+        <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+            AND date_format(t.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+        </if>
+        <if test="deptId != null and deptId != 0">
+            AND (t.dept_id = #{deptId} OR t.dept_id IN ( SELECT d.dept_id FROM sys_dept d WHERE find_in_set(#{deptId}, ancestors) ))
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </select>
+    
+    <select id="selectKinderTeacherByTeacherId" parameterType="Long" resultMap="KinderTeacherResult">
+        <include refid="selectKinderTeacherVo"/>
+        where teacher_id = #{teacherId}
+    </select>
+        
+    <insert id="insertKinderTeacher" parameterType="KinderTeacher" useGeneratedKeys="true" keyProperty="teacherId">
+        insert into kinder_teacher
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">dept_id,</if>
+            <if test="userName != null and userName != ''">user_name,</if>
+            <if test="teacherNumber != null and teacherNumber != ''">teacher_number,</if>
+            <if test="phonenumber != null">phonenumber,</if>
+            <if test="duties != null">duties,</if>
+            <if test="email != null">email,</if>
+            <if test="birthday != null">birthday,</if>
+            <if test="sex != null">sex,</if>
+            <if test="password != null">password,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userName != null and userName != ''">#{userName},</if>
+            <if test="teacherNumber != null and teacherNumber != ''">#{teacherNumber},</if>
+            <if test="phonenumber != null">#{phonenumber},</if>
+            <if test="duties != null">#{duties},</if>
+            <if test="email != null">#{email},</if>
+            <if test="birthday != null">#{birthday},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="password != null">#{password},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateKinderTeacher" parameterType="KinderTeacher">
+        update kinder_teacher
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="teacherNumber != null and teacherNumber != ''">teacher_number = #{teacherNumber},</if>
+            <if test="phonenumber != null">phonenumber = #{phonenumber},</if>
+            <if test="duties != null">duties = #{duties},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="birthday != null">birthday = #{birthday},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where teacher_id = #{teacherId}
+    </update>
+
+    <delete id="deleteKinderTeacherByTeacherId" parameterType="Long">
+        delete from kinder_teacher where teacher_id = #{teacherId}
+    </delete>
+
+    <delete id="deleteKinderTeacherByTeacherIds" parameterType="String">
+        delete from kinder_teacher where teacher_id in 
+        <foreach item="teacherId" collection="array" open="(" separator="," close=")">
+            #{teacherId}
+        </foreach>
+    </delete>
+</mapper>
