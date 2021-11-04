@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.kinder_student.mapper.KinderStudentMapper">
+    
+    <resultMap type="KinderStudent" id="KinderStudentResult">
+        <result property="studentId"    column="student_id"    />
+        <result property="claseId"    column="clase_id"    />
+        <result property="studentNumber"    column="student_number"    />
+        <result property="studentName"    column="student_name"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="sex"    column="sex"    />
+        <result property="address"    column="address"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectKinderStudentVo">
+        select student_id, clase_id, student_number, student_name, birthday, sex, address, status, create_by, create_time, update_by, update_time, remark from kinder_student
+    </sql>
+
+    <select id="selectKinderStudentList" parameterType="KinderStudent" resultMap="KinderStudentResult">
+        <include refid="selectKinderStudentVo"/>
+        <where>  
+            <if test="claseId != null "> and clase_id = #{claseId}</if>
+            <if test="studentNumber != null  and studentNumber != ''"> and student_number = #{studentNumber}</if>
+            <if test="studentName != null  and studentName != ''"> and student_name like concat('%', #{studentName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectKinderStudentByStudentId" parameterType="Long" resultMap="KinderStudentResult">
+        <include refid="selectKinderStudentVo"/>
+        where student_id = #{studentId}
+    </select>
+        
+    <insert id="insertKinderStudent" parameterType="KinderStudent" useGeneratedKeys="true" keyProperty="studentId">
+        insert into kinder_student
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="claseId != null">clase_id,</if>
+            <if test="studentNumber != null and studentNumber != ''">student_number,</if>
+            <if test="studentName != null and studentName != ''">student_name,</if>
+            <if test="birthday != null">birthday,</if>
+            <if test="sex != null">sex,</if>
+            <if test="address != null and address != ''">address,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="claseId != null">#{claseId},</if>
+            <if test="studentNumber != null and studentNumber != ''">#{studentNumber},</if>
+            <if test="studentName != null and studentName != ''">#{studentName},</if>
+            <if test="birthday != null">#{birthday},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="address != null and address != ''">#{address},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateKinderStudent" parameterType="KinderStudent">
+        update kinder_student
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="claseId != null">clase_id = #{claseId},</if>
+            <if test="studentNumber != null and studentNumber != ''">student_number = #{studentNumber},</if>
+            <if test="studentName != null and studentName != ''">student_name = #{studentName},</if>
+            <if test="birthday != null">birthday = #{birthday},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where student_id = #{studentId}
+    </update>
+
+    <delete id="deleteKinderStudentByStudentId" parameterType="Long">
+        delete from kinder_student where student_id = #{studentId}
+    </delete>
+
+    <delete id="deleteKinderStudentByStudentIds" parameterType="String">
+        delete from kinder_student where student_id in 
+        <foreach item="studentId" collection="array" open="(" separator="," close=")">
+            #{studentId}
+        </foreach>
+    </delete>
+</mapper>

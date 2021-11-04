@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.kinder_notice.mapper.KinderNoticeMapper">
+    
+    <resultMap type="KinderNotice" id="KinderNoticeResult">
+        <result property="noticeId"    column="notice_id"    />
+        <result property="content"    column="content"    />
+        <result property="teacherId"    column="teacher_id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectKinderNoticeVo">
+        select notice_id, content, teacher_id, parent_id, status, create_by, create_time, update_by, update_time, remark from kinder_notice
+    </sql>
+
+    <select id="selectKinderNoticeList" parameterType="KinderNotice" resultMap="KinderNoticeResult">
+        <include refid="selectKinderNoticeVo"/>
+        <where>  
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="teacherId != null "> and teacher_id = #{teacherId}</if>
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+        </where>
+    </select>
+    
+    <select id="selectKinderNoticeByNoticeId" parameterType="Long" resultMap="KinderNoticeResult">
+        <include refid="selectKinderNoticeVo"/>
+        where notice_id = #{noticeId}
+    </select>
+        
+    <insert id="insertKinderNotice" parameterType="KinderNotice" useGeneratedKeys="true" keyProperty="noticeId">
+        insert into kinder_notice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="content != null">content,</if>
+            <if test="teacherId != null">teacher_id,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="content != null">#{content},</if>
+            <if test="teacherId != null">#{teacherId},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateKinderNotice" parameterType="KinderNotice">
+        update kinder_notice
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="content != null">content = #{content},</if>
+            <if test="teacherId != null">teacher_id = #{teacherId},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where notice_id = #{noticeId}
+    </update>
+
+    <delete id="deleteKinderNoticeByNoticeId" parameterType="Long">
+        delete from kinder_notice where notice_id = #{noticeId}
+    </delete>
+
+    <delete id="deleteKinderNoticeByNoticeIds" parameterType="String">
+        delete from kinder_notice where notice_id in 
+        <foreach item="noticeId" collection="array" open="(" separator="," close=")">
+            #{noticeId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.kinder_attendance.mapper.KinderAttendanceMapper">
+    
+    <resultMap type="KinderAttendance" id="KinderAttendanceResult">
+        <result property="attendanceId"    column="attendance_id"    />
+        <result property="inTime"    column="in_time"    />
+        <result property="outTime"    column="out_time"    />
+        <result property="infoId"    column="info_id"    />
+        <result property="studentId"    column="student_id"    />
+        <result property="content"    column="content"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectKinderAttendanceVo">
+        select attendance_id, in_time, out_time, info_id, student_id, content, status, create_by, create_time, update_by, update_time, remark from kinder_attendance
+    </sql>
+
+    <select id="selectKinderAttendanceList" parameterType="KinderAttendance" resultMap="KinderAttendanceResult">
+        <include refid="selectKinderAttendanceVo"/>
+        <where>  
+            <if test="inTime != null "> and in_time = #{inTime}</if>
+            <if test="outTime != null "> and out_time = #{outTime}</if>
+            <if test="infoId != null "> and info_id = #{infoId}</if>
+            <if test="studentId != null "> and student_id = #{studentId}</if>
+        </where>
+    </select>
+    
+    <select id="selectKinderAttendanceByAttendanceId" parameterType="Long" resultMap="KinderAttendanceResult">
+        <include refid="selectKinderAttendanceVo"/>
+        where attendance_id = #{attendanceId}
+    </select>
+        
+    <insert id="insertKinderAttendance" parameterType="KinderAttendance" useGeneratedKeys="true" keyProperty="attendanceId">
+        insert into kinder_attendance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="inTime != null">in_time,</if>
+            <if test="outTime != null">out_time,</if>
+            <if test="infoId != null">info_id,</if>
+            <if test="studentId != null">student_id,</if>
+            <if test="content != null">content,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="inTime != null">#{inTime},</if>
+            <if test="outTime != null">#{outTime},</if>
+            <if test="infoId != null">#{infoId},</if>
+            <if test="studentId != null">#{studentId},</if>
+            <if test="content != null">#{content},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateKinderAttendance" parameterType="KinderAttendance">
+        update kinder_attendance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="inTime != null">in_time = #{inTime},</if>
+            <if test="outTime != null">out_time = #{outTime},</if>
+            <if test="infoId != null">info_id = #{infoId},</if>
+            <if test="studentId != null">student_id = #{studentId},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where attendance_id = #{attendanceId}
+    </update>
+
+    <delete id="deleteKinderAttendanceByAttendanceId" parameterType="Long">
+        delete from kinder_attendance where attendance_id = #{attendanceId}
+    </delete>
+
+    <delete id="deleteKinderAttendanceByAttendanceIds" parameterType="String">
+        delete from kinder_attendance where attendance_id in 
+        <foreach item="attendanceId" collection="array" open="(" separator="," close=")">
+            #{attendanceId}
+        </foreach>
+    </delete>
+</mapper>
