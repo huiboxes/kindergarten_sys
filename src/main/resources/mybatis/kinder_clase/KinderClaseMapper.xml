@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.kinder_clase.mapper.KinderClaseMapper">
+    
+    <resultMap type="KinderClase" id="KinderClaseResult">
+        <result property="claseId"    column="clase_id"    />
+        <result property="teacherId"    column="teacher_id"    />
+        <result property="taId"    column="ta_id"    />
+        <result property="claseName"    column="clase_name"    />
+        <result property="claseType"    column="clase_type"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectKinderClaseVo">
+        select clase_id, teacher_id, ta_id, clase_name, clase_type, status, create_by, create_time, update_by, update_time, remark from kinder_clase
+    </sql>
+
+    <select id="selectKinderClaseList" parameterType="KinderClase" resultMap="KinderClaseResult">
+        <include refid="selectKinderClaseVo"/>
+        <where>  
+            <if test="teacherId != null "> and teacher_id = #{teacherId}</if>
+            <if test="taId != null "> and ta_id = #{taId}</if>
+            <if test="claseName != null  and claseName != ''"> and clase_name like concat('%', #{claseName}, '%')</if>
+            <if test="claseType != null  and claseType != ''"> and clase_type = #{claseType}</if>
+        </where>
+    </select>
+    
+    <select id="selectKinderClaseByClaseId" parameterType="Long" resultMap="KinderClaseResult">
+        <include refid="selectKinderClaseVo"/>
+        where clase_id = #{claseId}
+    </select>
+        
+    <insert id="insertKinderClase" parameterType="KinderClase" useGeneratedKeys="true" keyProperty="claseId">
+        insert into kinder_clase
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="teacherId != null">teacher_id,</if>
+            <if test="taId != null">ta_id,</if>
+            <if test="claseName != null and claseName != ''">clase_name,</if>
+            <if test="claseType != null and claseType != ''">clase_type,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="teacherId != null">#{teacherId},</if>
+            <if test="taId != null">#{taId},</if>
+            <if test="claseName != null and claseName != ''">#{claseName},</if>
+            <if test="claseType != null and claseType != ''">#{claseType},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateKinderClase" parameterType="KinderClase">
+        update kinder_clase
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="teacherId != null">teacher_id = #{teacherId},</if>
+            <if test="taId != null">ta_id = #{taId},</if>
+            <if test="claseName != null and claseName != ''">clase_name = #{claseName},</if>
+            <if test="claseType != null and claseType != ''">clase_type = #{claseType},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where clase_id = #{claseId}
+    </update>
+
+    <delete id="deleteKinderClaseByClaseId" parameterType="Long">
+        delete from kinder_clase where clase_id = #{claseId}
+    </delete>
+
+    <delete id="deleteKinderClaseByClaseIds" parameterType="String">
+        delete from kinder_clase where clase_id in 
+        <foreach item="claseId" collection="array" open="(" separator="," close=")">
+            #{claseId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.kinder_image.mapper.KinderImageMapper">
+    
+    <resultMap type="KinderImage" id="KinderImageResult">
+        <result property="imageId"    column="image_id"    />
+        <result property="teacherId"    column="teacher_id"    />
+        <result property="claseId"    column="clase_id"    />
+        <result property="imgSrc"    column="img_src"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectKinderImageVo">
+        select image_id, teacher_id, clase_id, img_src, status, create_by, create_time, update_by, update_time, remark from kinder_image
+    </sql>
+
+    <select id="selectKinderImageList" parameterType="KinderImage" resultMap="KinderImageResult">
+        <include refid="selectKinderImageVo"/>
+        <where>  
+            <if test="teacherId != null "> and teacher_id = #{teacherId}</if>
+            <if test="claseId != null "> and clase_id = #{claseId}</if>
+        </where>
+    </select>
+    
+    <select id="selectKinderImageByImageId" parameterType="Long" resultMap="KinderImageResult">
+        <include refid="selectKinderImageVo"/>
+        where image_id = #{imageId}
+    </select>
+        
+    <insert id="insertKinderImage" parameterType="KinderImage" useGeneratedKeys="true" keyProperty="imageId">
+        insert into kinder_image
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="teacherId != null">teacher_id,</if>
+            <if test="claseId != null">clase_id,</if>
+            <if test="imgSrc != null and imgSrc != ''">img_src,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="teacherId != null">#{teacherId},</if>
+            <if test="claseId != null">#{claseId},</if>
+            <if test="imgSrc != null and imgSrc != ''">#{imgSrc},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateKinderImage" parameterType="KinderImage">
+        update kinder_image
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="teacherId != null">teacher_id = #{teacherId},</if>
+            <if test="claseId != null">clase_id = #{claseId},</if>
+            <if test="imgSrc != null and imgSrc != ''">img_src = #{imgSrc},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where image_id = #{imageId}
+    </update>
+
+    <delete id="deleteKinderImageByImageId" parameterType="Long">
+        delete from kinder_image where image_id = #{imageId}
+    </delete>
+
+    <delete id="deleteKinderImageByImageIds" parameterType="String">
+        delete from kinder_image where image_id in 
+        <foreach item="imageId" collection="array" open="(" separator="," close=")">
+            #{imageId}
+        </foreach>
+    </delete>
+</mapper>
